@@ -36,8 +36,8 @@ CREATE TABLE `elf` (
 /*Data for the table `elf` */
 
 insert  into `elf`(`id_elf`,`jenis_elf`,`type_elf`,`tahun_elf`,`warna_elf`,`stok_elf`,`harga_sewa_elf`,`driver`,`foto`) values 
-(1,'Mercy','E60',2018,'Hitam',20,250000,'tidak',NULL),
-(2,'Mercy','F60',2021,'Merah Muda',11,250000,'tidak',NULL);
+(1,'Mercy','E60',2018,'Hitam',18,250000,'tidak','elf_images\\1f4f2da6-5e61-4ba7-8d9c-29b44a7ee339_1734193971_th (4).jpeg'),
+(2,'Mercy','F60',2021,'Merah Muda',10,250000,'tidak','elf_images\\9cab189f-38d4-4998-8dfd-b3390c203a83_1734193963_th (4).jpeg');
 
 /*Table structure for table `mobil` */
 
@@ -59,7 +59,7 @@ CREATE TABLE `mobil` (
 /*Data for the table `mobil` */
 
 insert  into `mobil`(`id_mbl`,`jenis_mbl`,`type_mbl`,`tahun_mbl`,`warna_mbl`,`stok_mbl`,`harga_sewa_mbl`,`driver`,`foto`) values 
-(1,'Honda','Jazz',2017,'Putih',24,150000,'tidak','mobil_images\\b1db2db5-f80c-4bcf-b9e1-af2ae9a41260_1734172437_th (5).jpeg'),
+(1,'Honda','Jazz',2017,'Putih',24,150000,'tidak','mobil_images\\9fbd2198-303e-4c8a-a46b-a81a4302aa5d_1734193941_th (3).jpeg'),
 (2,'Toyota','Yaris',2022,'Kuning',0,150000,'tidak','mobil_images\\4a3483bd-526b-4881-8f46-83baf367dfeb_1734172427_th (3).jpeg');
 
 /*Table structure for table `motor` */
@@ -82,8 +82,8 @@ CREATE TABLE `motor` (
 /*Data for the table `motor` */
 
 insert  into `motor`(`id_mtr`,`jenis_mtr`,`type_mtr`,`tahun_mtr`,`warna_mtr`,`stok_mtr`,`harga_sewa_mtr`,`driver`,`foto`) values 
-(1,'Vario','160cc',2021,'hitam',33,70000,'tidak','motor_images\\5cb32ad4-62b0-4723-8021-da4fa96bb928_1734161352_th (5).jpeg'),
-(2,'Yamaha','Nmax',2024,'Hitam',95,75000,'tidak','motor_images\\6048c7a1-c658-49fd-a92f-b11c96c683ab_1734161345_th (4).jpg'),
+(1,'Vario','160cc',2021,'hitam',33,70000,'tidak','motor_images\\d0550133-2856-4635-8859-1beed65c4130_1734193907_th (2).jpeg'),
+(2,'Yamaha','Nmax',2024,'Hitam',95,75000,'tidak','motor_images\\57b6dc7c-5d42-43de-8545-bc8b3a2f924f_1734193895_th (2).jpeg'),
 (4,'tesss','tess',2021,'putih',90,35000,'tidak','motor_images\\1734161331_th (2).jpeg');
 
 /*Table structure for table `pembayaran` */
@@ -127,13 +127,14 @@ CREATE TABLE `pembayaran_elf` (
   `sisa_pembayaran_amount` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`id_transaksi_elf`),
   CONSTRAINT `pembayaran_elf_ibfk_1` FOREIGN KEY (`id_transaksi_elf`) REFERENCES `pinjam_elf` (`id_transaksi_elf`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `pembayaran_elf` */
 
 insert  into `pembayaran_elf`(`id_transaksi_elf`,`id_user`,`tanggal_dikembalikan`,`total_pembayaran`,`denda`,`dibayarkan`,`status`,`sisa_pembayaran_amount`) values 
 (1,NULL,'2000-02-01',405000.00,155000.00,1000.00,'Kurang',404000.00),
-(4,7,'2000-02-01',405000.00,155000.00,700000.00,'Lunas',-295000.00);
+(4,7,'2000-02-01',405000.00,155000.00,700000.00,'Lunas',-295000.00),
+(6,8,'2024-12-12',710000.00,10000.00,710000.00,'Pending',0.00);
 
 /*Table structure for table `pembayaran_motor` */
 
@@ -204,14 +205,15 @@ CREATE TABLE `pinjam_elf` (
   PRIMARY KEY (`id_transaksi_elf`),
   KEY `id_elf` (`id_elf`),
   CONSTRAINT `pinjam_elf_ibfk_1` FOREIGN KEY (`id_elf`) REFERENCES `elf` (`id_elf`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `pinjam_elf` */
 
 insert  into `pinjam_elf`(`id_transaksi_elf`,`id_elf`,`id_user`,`harga_sewa_elf`,`tanggal_pinjam`,`tanggal_kembali`,`jumlah_disewa`,`driver`) values 
 (1,1,NULL,250000.00,'2000-01-01','2000-02-01',NULL,'tidak'),
 (2,1,NULL,250000.00,'2000-01-01','2000-02-01',NULL,'tidak'),
-(4,1,7,250000.00,'2000-01-01','2000-01-01',NULL,'tidak');
+(4,1,7,250000.00,'2000-01-01','2000-01-01',NULL,'tidak'),
+(6,1,8,700000.00,'2024-12-11','2024-12-12',2,'ya');
 
 /*Table structure for table `pinjam_motor` */
 
