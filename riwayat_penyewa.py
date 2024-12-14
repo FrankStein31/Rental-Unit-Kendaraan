@@ -3,7 +3,13 @@ import mysql.connector
 import menu_penyewa as mep
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow, user_id=None):
+
+        self.user_id = user_id
+
+        print("Ini id user dari HALAMAN RIWAYAT PENYEWA", user_id)
+
+
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
         MainWindow.setStyleSheet("background-color: rgb(24, 121, 202);")
@@ -69,7 +75,7 @@ class Ui_MainWindow(object):
     def KembaliMenu(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = mep.Ui_MainWindow()
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self.window, self.user_id)
         self.window.show()
 
     def retranslateUi(self, MainWindow):
@@ -93,6 +99,7 @@ class Ui_MainWindow(object):
         self.tableWidget.setRowCount(0)
 
         # Fetch data from pinjam, pinjam_motor, and pinjam_elf tables with status from pembayaran tables
+        # Filter by user_id
         cursor.execute("""
             SELECT 
                 p.id_transaksi, 
@@ -105,6 +112,7 @@ class Ui_MainWindow(object):
             FROM pinjam p
             LEFT JOIN pembayaran pmobil ON p.id_transaksi = pmobil.id_transaksi
             LEFT JOIN mobil m ON p.id_transaksi = m.id_mbl
+            WHERE p.id_user = %s
             UNION
             SELECT 
                 pm.id_transaksi_motor, 
@@ -117,6 +125,7 @@ class Ui_MainWindow(object):
             FROM pinjam_motor pm
             LEFT JOIN pembayaran_motor pmotor ON pm.id_transaksi_motor = pmotor.id_transaksi_motor
             LEFT JOIN motor mo ON pm.id_transaksi_motor = mo.id_mtr
+            WHERE pm.id_user = %s
             UNION
             SELECT 
                 pe.id_transaksi_elf, 
@@ -129,7 +138,8 @@ class Ui_MainWindow(object):
             FROM pinjam_elf pe
             LEFT JOIN pembayaran_elf pelf ON pe.id_transaksi_elf = pelf.id_transaksi_elf
             LEFT JOIN elf e ON pe.id_transaksi_elf = e.id_elf
-        """)
+            WHERE pe.id_user = %s
+        """, (self.user_id, self.user_id, self.user_id))
 
         # Fetch data and print for debugging
         rows = cursor.fetchall()
@@ -141,7 +151,7 @@ class Ui_MainWindow(object):
             return
 
         # Set table column count and headers
-        self.tableWidget.setColumnCount(7)  # Ensure this matches the number of columns in your SQL query
+        self.tableWidget.setColumnCount(7)
         self.tableWidget.setHorizontalHeaderLabels([
             "ID Transaksi", "Merk Unit", "Harga Sewa", 
             "Tanggal Pinjam", "Tanggal Kembali", "Driver", "Status Pembayaran"

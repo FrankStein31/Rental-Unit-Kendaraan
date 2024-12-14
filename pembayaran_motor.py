@@ -16,7 +16,11 @@ import kelolaunit_penyewa as kel
 
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow, user_id=None):
+
+        self.user_id = user_id
+        print("Ini id user dari HALAMAN PEMBAYARAN MOTOR", user_id)
+
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 568)
         MainWindow.setStyleSheet("background-color: rgb(24, 121, 202);")
@@ -149,7 +153,7 @@ class Ui_MainWindow(object):
     def KelolaUnit(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = kel.Ui_MainWindow()
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self.window, self.user_id)
         self.window.show()
 
 
@@ -158,6 +162,7 @@ class Ui_MainWindow(object):
         try:
             # Ambil nilai dari QLineEdit dan QDateEdit
             id_transaksi = self.lineEdit_id.text()
+            id_user = self.user_id
             tanggal_dikembalikan = self.dateEdit_kembali.date()
 
             # Validasi ID transaksi
@@ -212,12 +217,11 @@ class Ui_MainWindow(object):
                 print(f"Denda: {denda}")
                 print(f"Total Pembayaran: {total_pembayaran}")
 
-                # Simpan hasil ke tabel pembayaran menggunakan INSERT
                 query_insert = """
-                INSERT INTO pembayaran_motor (id_transaksi_motor, tanggal_dikembalikan, denda, total_pembayaran)
-                VALUES (%s, %s, %s, %s)
+                INSERT INTO pembayaran_motor (id_transaksi_motor, id_user, tanggal_dikembalikan, denda, total_pembayaran)
+                VALUES (%s, %s, %s, %s, %s)
                 """
-                cursor.execute(query_insert, (id_transaksi, tanggal_dikembalikan.toString('yyyy-MM-dd'), denda, total_pembayaran))
+                cursor.execute(query_insert, (id_transaksi, id_user, tanggal_dikembalikan.toString('yyyy-MM-dd'), denda, total_pembayaran))
                 conn.commit()
 
                 # Tampilkan hasil ke QLabel
@@ -311,6 +315,12 @@ class Ui_MainWindow(object):
                 conn.commit()  # Simpan perubahan
 
                 print("Data pembayaran berhasil disimpan!")
+                from menu_penyewa import Ui_MainWindow as menu
+                self.window = QtWidgets.QMainWindow()
+                self.ui = menu()
+                self.ui.setupUi(self.window, self.user_id)
+                QtWidgets.QApplication.activeWindow().close()
+                self.window.show()
 
             else:
                 print("Data pembayaran tidak ditemukan!")

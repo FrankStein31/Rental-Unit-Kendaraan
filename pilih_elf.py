@@ -11,11 +11,15 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import menu_penyewa as mep
 import mysql.connector
-import sewa_mtr as se
+import sewa_elf as se
 
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow, user_id=None):
+
+        self.user_id = user_id
+        print("Ini id user dari HALAMAN PILIH ELF", user_id)
+
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
         MainWindow.setStyleSheet("background-color: rgb(24, 121, 202);")
@@ -156,26 +160,26 @@ class Ui_MainWindow(object):
         self.pushButton.clicked.connect(MainWindow.close)
         self.pushButton_2.clicked.connect(self.Pinjam)
         self.pushButton_2.clicked.connect(MainWindow.close)
-        self.pushButton_3.clicked.connect(self.cari_motor)
-        self.pushButton_3.clicked.connect(self.cari_motor_ke_lineEdit)
+        self.pushButton_3.clicked.connect(self.cari_elf)
+        self.pushButton_3.clicked.connect(self.cari_elf_ke_lineEdit)
     
 
     def KembaliMenu(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = mep.Ui_MainWindow()
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self.window, self.user_id)
         self.window.show()
 
     def Pinjam(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = se.Ui_MainWindow()
         self.ui.setupUi(self.window)
-        id_motor = self.lineEdit.text()  # Mendapatkan ID yang dimasukkan
-        print(f"ID motor yang dikirim: {id_motor}")  # Debug untuk memastikan ID yang dikirim
-        self.ui.setupUi(self.window, id_motor)
+        id_elf = self.lineEdit.text()  # Mendapatkan ID yang dimasukkan
+        print(f"ID elf yang dikirim: {id_elf}")  # Debug untuk memastikan ID yang dikirim
+        self.ui.setupUi(self.window, id_elf, self.user_id)
         self.window.show()
 
-    def cari_motor(self):
+    def cari_elf(self):
         try:
             # Get the ID entered by the user (assumed to be in a QLineEdit widget)
             id_mbl = self.lineEdit.text()  # Replace 'id_input' with your QLineEdit widget name
@@ -217,7 +221,7 @@ class Ui_MainWindow(object):
         except mysql.connector.Error as err:
             print(f"Error: {err}")
 
-    def cari_motor_ke_lineEdit(self):
+    def cari_elf_ke_lineEdit(self):
         try:
             # Get the ID entered by the user
             id_mbl = self.lineEdit.text()  # Replace 'lineEdit' with the QLineEdit widget for entering the ID

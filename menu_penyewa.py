@@ -15,7 +15,10 @@ import menu_struk as st
 import login as log
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow, user_id=None):
+
+        self.user_id = user_id
+        
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
         MainWindow.setStyleSheet("background-color: rgb(24, 121, 202);")
@@ -91,21 +94,27 @@ class Ui_MainWindow(object):
         self.pushButton_3.clicked.connect(MainWindow.close)
 
     def Unit(self):
+        print("Ini id user dari menu penyewa unit", self.user_id)
         self.window = QtWidgets.QMainWindow()
         self.ui = kup.Ui_MainWindow()
-        self.ui.setupUi(self.window)
+        # self.ui.setupUi(self.window)
+        self.ui.setupUi(self.window, self.user_id)
         self.window.show()
 
     def Riwayat(self):
+        print("Ini id user dari menu penyewa riwayat", self.user_id)
         self.window = QtWidgets.QMainWindow()
         self.ui = rep.Ui_MainWindow()
-        self.ui.setupUi(self.window)
+        # self.ui.setupUi(self.window)
+        self.ui.setupUi(self.window, self.user_id)
         self.window.show()
 
     def Struk(self):
+        print("Ini id user dari menu penyewa struk", self.user_id)
         self.window = QtWidgets.QMainWindow()
         self.ui = st.Ui_MainWindow()
-        self.ui.setupUi(self.window)
+        # self.ui.setupUi(self.window)
+        self.ui.setupUi(self.window, self.user_id)
         self.window.show()
 
     def Logout(self):

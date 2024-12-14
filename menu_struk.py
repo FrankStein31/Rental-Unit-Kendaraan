@@ -15,7 +15,11 @@ import struk_elf as elf
 import menu_penyewa as mep
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow, user_id=None):
+
+        self.user_id = user_id
+        print("Ini id user dari HALAMAN MENU STRUK", user_id)
+
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
         MainWindow.setStyleSheet("background-color: rgb(24, 121, 202);")
@@ -100,25 +104,25 @@ class Ui_MainWindow(object):
     def StrukMotor(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = mtr.Ui_MainWindow()
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self.window, self.user_id)
         self.window.show()
 
     def StrukMobil(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = mbl.Ui_MainWindow()
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self.window, self.user_id)
         self.window.show()
 
     def StrukElf(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = elf.Ui_MainWindow()
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self.window, self.user_id)
         self.window.show()
 
     def KembaliMenu(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = mep.Ui_MainWindow()
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self.window, self.user_id)
         self.window.show()
 
     def retranslateUi(self, MainWindow):

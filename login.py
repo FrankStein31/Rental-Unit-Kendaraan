@@ -149,10 +149,18 @@ class Ui_MainWindow(object):
         self.pushButton_keluar.clicked.connect(MainWindow.close)
 
 
-    def openMenuPenyewa(self):
+    # def openMenuPenyewa(self):
+    #     self.window = QtWidgets.QMainWindow()
+    #     self.ui = mp.Ui_MainWindow()
+    #     self.ui.setupUi(self.window)
+    #     self.window.show()
+
+    def openMenuPenyewa(self, user_id):
+        print("Ini id user dari login opern menu penyewa ", user_id)
         self.window = QtWidgets.QMainWindow()
         self.ui = mp.Ui_MainWindow()
-        self.ui.setupUi(self.window)
+        # Pass the user_id to setupUi method
+        self.ui.setupUi(self.window, user_id)
         self.window.show()
 
     def openMenuAdmin(self):
@@ -168,11 +176,13 @@ class Ui_MainWindow(object):
         if usernamelogin == "" or passwordlogin == "":
             self.notif("Error", "Username dan password harus diisi!")
         else:
-            level_login = User.login(usernamelogin, passwordlogin)
+            # level_login = User.login(usernamelogin, passwordlogin)
+            level_login, user_id = User.login(usernamelogin, passwordlogin)
             if level_login == "admin":
                 self.openMenuAdmin()
             elif level_login == "penyewa":
-                self.openMenuPenyewa()
+                # self.openMenuPenyewa()
+                self.openMenuPenyewa(user_id)
             else:
                 self.notif("Error", "Username atau password salah!")
 

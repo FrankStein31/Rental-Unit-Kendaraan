@@ -15,7 +15,11 @@ import pilih_mobil as mbl
 import pilih_elf as elf
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow, user_id=None):
+
+        self.user_id = user_id
+        print("Ini id user dari HALAMAN KELOLA UNIT PENYEWA", user_id)
+
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
         MainWindow.setStyleSheet("background-color: rgb(24, 121, 202);")
@@ -99,34 +103,34 @@ class Ui_MainWindow(object):
     def Motor(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = mtr.Ui_MainWindow()
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self.window, self.user_id)
         self.window.show()
 
     def Mobil(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = mbl.Ui_MainWindow()
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self.window, self.user_id)
         self.window.show()
 
     def Elf(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = elf.Ui_MainWindow()
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self.window, self.user_id)
         self.window.show()
 
     def KembaliMenu(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = mep.Ui_MainWindow()
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self.window, self.user_id)
         self.window.show()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label_4.setText(_translate("MainWindow", "KELOLA UNIT"))
-        self.pushButton_3.setText(_translate("MainWindow", "Pilih"))
-        self.pushButton_2.setText(_translate("MainWindow", "Pilih"))
-        self.pushButton.setText(_translate("MainWindow", "Pilih"))
+        self.pushButton_3.setText(_translate("MainWindow", "Pilih Elf"))
+        self.pushButton_2.setText(_translate("MainWindow", "Pilih Mobil"))
+        self.pushButton.setText(_translate("MainWindow", "Pilih Motor"))
         self.pushButton_keluar.setText(_translate("MainWindow", "Kembali"))
 
 

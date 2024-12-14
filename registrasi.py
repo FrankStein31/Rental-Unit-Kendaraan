@@ -187,14 +187,13 @@ class Ui_MainWindow(object):
         # Tampilkan notifikasi sukses
         QtWidgets.QMessageBox.information(None, "Sukses", "Akun berhasil dibuat!")
 
-        # Kembali ke halaman login
+        from login import Ui_MainWindow as log
+        
         self.window = QtWidgets.QMainWindow()
-        self.ui = log.Ui_MainWindow()
+        self.ui = log()
         self.ui.setupUi(self.window)
+        QtWidgets.QApplication.activeWindow().close()
         self.window.show()
-
-        # Tutup halaman registrasi
-        self.close()
 
 
     def retranslateUi(self, MainWindow):

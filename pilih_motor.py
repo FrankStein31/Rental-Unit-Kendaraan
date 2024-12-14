@@ -14,7 +14,11 @@ import sewa_mtr as se
 
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow, user_id=None):
+
+        self.user_id = user_id
+        print("Ini id user dari HALAMAN PILIH MOTOR", user_id)
+
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
         MainWindow.setStyleSheet("background-color: rgb(24, 121, 202);")
@@ -164,7 +168,7 @@ class Ui_MainWindow(object):
     def KembaliMenu(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = mep.Ui_MainWindow()
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self.window, self.user_id)
         self.window.show()
 
     def Pinjam(self):
@@ -173,7 +177,7 @@ class Ui_MainWindow(object):
         self.ui.setupUi(self.window)
         id_motor = self.lineEdit.text()  # Mendapatkan ID yang dimasukkan
         print(f"ID motor yang dikirim: {id_motor}")  # Debug untuk memastikan ID yang dikirim
-        self.ui.setupUi(self.window, id_motor) 
+        self.ui.setupUi(self.window, id_motor, self.user_id) 
         self.window.show()
 
     def cari_motor(self):

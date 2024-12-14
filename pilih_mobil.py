@@ -14,7 +14,11 @@ import mysql.connector
 import sewa_mbl as se
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow, user_id=None):
+
+        self.user_id = user_id
+        print("Ini id user dari HALAMAN PILIH MOBIL", user_id)
+
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
         MainWindow.setStyleSheet("background-color: rgb(24, 121, 202);")
@@ -155,26 +159,26 @@ class Ui_MainWindow(object):
         self.pushButton.clicked.connect(MainWindow.close)
         self.pushButton_2.clicked.connect(self.Pinjam)
         self.pushButton_2.clicked.connect(MainWindow.close)
-        self.pushButton_3.clicked.connect(self.cari_motor)
-        self.pushButton_3.clicked.connect(self.cari_motor_ke_lineEdit)
+        self.pushButton_3.clicked.connect(self.cari_mobil)
+        self.pushButton_3.clicked.connect(self.cari_mobil_ke_lineEdit)
     
 
     def KembaliMenu(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = mep.Ui_MainWindow()
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self.window, self.user_id)
         self.window.show()
 
     def Pinjam(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = se.Ui_MainWindow()
         self.ui.setupUi(self.window)
-        id_motor = self.lineEdit.text()  # Mendapatkan ID yang dimasukkan
-        print(f"ID motor yang dikirim: {id_motor}")  # Debug untuk memastikan ID yang dikirim
-        self.ui.setupUi(self.window, id_motor)
+        id_mobil = self.lineEdit.text()  # Mendapatkan ID yang dimasukkan
+        print(f"id_mobil yang dikirim: {id_mobil}")  # Debug untuk memastikan ID yang dikirim
+        self.ui.setupUi(self.window, id_mobil, self.user_id)
         self.window.show()
 
-    def cari_motor(self):
+    def cari_mobil(self):
         try:
             # Get the ID entered by the user (assumed to be in a QLineEdit widget)
             id_mbl = self.lineEdit.text()  # Replace 'id_input' with your QLineEdit widget name
@@ -216,7 +220,7 @@ class Ui_MainWindow(object):
         except mysql.connector.Error as err:
             print(f"Error: {err}")
 
-    def cari_motor_ke_lineEdit(self):
+    def cari_mobil_ke_lineEdit(self):
         try:
             # Get the ID entered by the user
             id_mbl = self.lineEdit.text()  # Replace 'lineEdit' with the QLineEdit widget for entering the ID
@@ -257,15 +261,15 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label.setText(_translate("MainWindow", "Data Mobil yang Tersedia"))
         self.pushButton.setText(_translate("MainWindow", "Kembali"))
-        self.label_8.setText(_translate("MainWindow", "Tahun Elf :"))
-        self.label_10.setText(_translate("MainWindow", "Image Elf :"))
+        self.label_8.setText(_translate("MainWindow", "Tahun Mobil :"))
+        self.label_10.setText(_translate("MainWindow", "Image Mobil :"))
         self.label_5.setText(_translate("MainWindow", "ID :"))
         self.pushButton_2.setText(_translate("MainWindow", "Pinjam"))
-        self.label_6.setText(_translate("MainWindow", "Jenis Elf :"))
-        self.label_9.setText(_translate("MainWindow", "Warna Elf :"))
-        self.label_12.setText(_translate("MainWindow", "Stok Elf :"))
-        self.label_7.setText(_translate("MainWindow", "Type Elf :"))
-        self.pushButton_3.setText(_translate("MainWindow", "cari"))
+        self.label_6.setText(_translate("MainWindow", "Jenis Mobil :"))
+        self.label_9.setText(_translate("MainWindow", "Warna Mobil :"))
+        self.label_12.setText(_translate("MainWindow", "Stok Mobil :"))
+        self.label_7.setText(_translate("MainWindow", "Type Mobil :"))
+        self.pushButton_3.setText(_translate("MainWindow", "Mobil"))
         self.label_2.setText(_translate("MainWindow", "image"))
 
 

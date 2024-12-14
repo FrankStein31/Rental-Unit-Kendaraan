@@ -14,7 +14,11 @@ import pembayaran_motor as bayar
 import mysql.connector
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow,motor_id=None):
+    def setupUi(self, MainWindow,motor_id=None, user_id=None):
+
+        self.user_id = user_id
+        print("Ini id user dari HALAMAN SEWA MOTOR", user_id)
+
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(805, 602)
         MainWindow.setStyleSheet("background-color: rgb(24, 121, 202);")
@@ -142,13 +146,13 @@ class Ui_MainWindow(object):
     def Kembali(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = mbl.Ui_MainWindow()
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self.window, self.user_id)
         self.window.show()
 
     def Bayar(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = bayar.Ui_MainWindow()
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self.window, self.user_id)
         self.window.show()
 
     def set_motor_id(self, motor_id):
@@ -196,7 +200,7 @@ class Ui_MainWindow(object):
     def simpan_data(self):
         try:
             # Ambil nilai yang dimasukkan oleh pengguna
-            id_user = self.lineEdit_id.text()  # ID user dari QLineEdit
+            id_user = self.user_id
             tanggal_pinjam = self.dateEdit_pinjam.date().toString("yyyy-MM-dd")  # Tanggal pinjam
             tanggal_kembali = self.dateEdit_kembali.date().toString("yyyy-MM-dd")  # Tanggal kembali
             driver = self.comboBox.currentText()  # Pilihan driver (ya/tidak)
@@ -215,29 +219,43 @@ class Ui_MainWindow(object):
             )
             cursor = conn.cursor()
 
-            # Ambil id_mobil dan harga_sewa_mbl berdasarkan id_user dari tabel motor
+            # Ambil id_motor dan harga_sewa_mtr berdasarkan id_user dari tabel motor
             query_motor = """
             SELECT m.id_mtr, m.harga_sewa_mtr, m.driver, m.stok_mtr
             FROM motor m
-            JOIN user u ON m.id_mtr = u.id 
-            WHERE u.id = %s
+            WHERE m.stok_mtr > 0
+            LIMIT 1
             """
-            cursor.execute(query_motor, (id_user,))  # Ambil data mobil berdasarkan id_user
+            cursor.execute(query_motor)
             motor_result = cursor.fetchone()
 
             if motor_result:
-                id_mobil = motor_result[0]  # id_mobil
-                harga_sewa = motor_result[1]  # harga_sewa_mbl
-                driver = motor_result[2]  # driver (ya/tidak)
+                id_motor = motor_result[0]  # id_motor
+                harga_sewa = motor_result[1]  # harga_sewa_mtr
+                driver_tersedia = motor_result[2]  # driver (ya/tidak)
                 stok = motor_result[3]  # stok kendaraan
 
                 if stok > 0:
-                    # Query untuk menyimpan data ke dalam tabel pinjam
+                    # Query untuk menyimpan data ke dalam tabel pinjam_motor
                     query_insert = """
-                    INSERT INTO pinjam_motor (id_motor, harga_sewa_motor, tanggal_pinjam, tanggal_kembali, driver)
-                    VALUES (%s, %s, %s, %s, %s)
+                    INSERT INTO pinjam_motor (
+                        id_motor, 
+                        id_user, 
+                        harga_sewa_motor, 
+                        tanggal_pinjam, 
+                        tanggal_kembali, 
+                        driver
+                    )
+                    VALUES (%s, %s, %s, %s, %s, %s)
                     """
-                    cursor.execute(query_insert, (id_mobil, harga_sewa, tanggal_pinjam, tanggal_kembali, driver))
+                    cursor.execute(query_insert, (
+                        id_motor, 
+                        id_user, 
+                        harga_sewa, 
+                        tanggal_pinjam, 
+                        tanggal_kembali, 
+                        driver
+                    ))
 
                     # Update stok kendaraan di tabel motor
                     query_update_stok = """
@@ -245,7 +263,7 @@ class Ui_MainWindow(object):
                     SET stok_mtr = stok_mtr - 1
                     WHERE id_mtr = %s
                     """
-                    cursor.execute(query_update_stok, (id_mobil,))
+                    cursor.execute(query_update_stok, (id_motor,))
 
                     conn.commit()  # Commit untuk menyimpan perubahan ke database
 
@@ -264,7 +282,6 @@ class Ui_MainWindow(object):
             print("Invalid input: Please check the input values.")
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
-
 
 
     def retranslateUi(self, MainWindow):

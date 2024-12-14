@@ -10,28 +10,35 @@ mydb = mysql.connector.connect(
 mycursor = mydb.cursor()
 
 class User:
-    
-    def __init__(self):
-        self
-    
-    def login(val1, val2):
-        sql = "SELECT level FROM user WHERE username = %s AND password = %s"
-        val = (val1, val2)
-        mycursor.execute(sql, val)
-        level = mycursor.fetchone()
-        return str(level[0]) if level else None
+    @staticmethod
+    def login(username, password):
+        try:
+            sql = "SELECT level, id FROM user WHERE username = %s AND password = %s"
+            val = (username, password)
+            mycursor.execute(sql, val)
+            result = mycursor.fetchone()
+            
+            if result:
+                # Return both level and id
+                return str(result[0]), result[1]
+            else:
+                # Return default values if login fails
+                return None, None
+        except Exception as e:
+            print(f"Login error: {e}")
+            return None, None
 
+    @staticmethod
     def select_data():
         sql = "SELECT * FROM user"
         mycursor.execute(sql)
         myresult = mycursor.fetchall()
-        for x in myresult:
-            print(x)
+        return myresult
     
+    @staticmethod
     def insert_data(nama, alamat, no_hp, username, password, level):
         sql = "INSERT INTO user (nama, alamat, no_hp, username, password, level) VALUES (%s, %s, %s, %s, %s, %s)"
         val = (nama, alamat, no_hp, username, password, level)
         mycursor.execute(sql, val)
         mydb.commit()
-        print(mycursor.rowcount, "Data berhasil ditambahkan...")
-
+        return mycursor.rowcount
