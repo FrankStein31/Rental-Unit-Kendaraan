@@ -59,8 +59,8 @@ CREATE TABLE `mobil` (
 /*Data for the table `mobil` */
 
 insert  into `mobil`(`id_mbl`,`jenis_mbl`,`type_mbl`,`tahun_mbl`,`warna_mbl`,`stok_mbl`,`harga_sewa_mbl`,`driver`,`foto`) values 
-(1,'Honda','Jazz',2017,'Putih',38,150000,'tidak',NULL),
-(2,'Toyota','Yaris',2022,'Kuning',1,150000,'tidak',NULL);
+(1,'Honda','Jazz',2017,'Putih',24,150000,'tidak','mobil_images\\b1db2db5-f80c-4bcf-b9e1-af2ae9a41260_1734172437_th (5).jpeg'),
+(2,'Toyota','Yaris',2022,'Kuning',0,150000,'tidak','mobil_images\\4a3483bd-526b-4881-8f46-83baf367dfeb_1734172427_th (3).jpeg');
 
 /*Table structure for table `motor` */
 
@@ -82,9 +82,9 @@ CREATE TABLE `motor` (
 /*Data for the table `motor` */
 
 insert  into `motor`(`id_mtr`,`jenis_mtr`,`type_mtr`,`tahun_mtr`,`warna_mtr`,`stok_mtr`,`harga_sewa_mtr`,`driver`,`foto`) values 
-(1,'Vario','160cc',2021,'hitam',35,70000,'tidak','motor_images\\5cb32ad4-62b0-4723-8021-da4fa96bb928_1734161352_th (5).jpeg'),
-(2,'Yamaha','Nmax',2024,'Hitam',100,75000,'tidak','motor_images\\6048c7a1-c658-49fd-a92f-b11c96c683ab_1734161345_th (4).jpg'),
-(4,'tesss','tess',2021,'putih',100,35000,'tidak','motor_images\\1734161331_th (2).jpeg');
+(1,'Vario','160cc',2021,'hitam',33,70000,'tidak','motor_images\\5cb32ad4-62b0-4723-8021-da4fa96bb928_1734161352_th (5).jpeg'),
+(2,'Yamaha','Nmax',2024,'Hitam',95,75000,'tidak','motor_images\\6048c7a1-c658-49fd-a92f-b11c96c683ab_1734161345_th (4).jpg'),
+(4,'tesss','tess',2021,'putih',90,35000,'tidak','motor_images\\1734161331_th (2).jpeg');
 
 /*Table structure for table `pembayaran` */
 
@@ -101,13 +101,16 @@ CREATE TABLE `pembayaran` (
   `sisa_pembayaran_amount` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`id_transaksi`),
   CONSTRAINT `pembayaran_ibfk_1` FOREIGN KEY (`id_transaksi`) REFERENCES `pinjam` (`id_transaksi`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `pembayaran` */
 
 insert  into `pembayaran`(`id_transaksi`,`id_user`,`tanggal_dikembalikan`,`total_pembayaran`,`denda`,`dibayarkan`,`status`,`sisa_pembayaran_amount`) values 
 (11,NULL,'2000-01-01',150000.00,0.00,77777.00,'Kurang',72223.00),
-(15,7,'2000-03-01',450000.00,300000.00,1000000.00,'Lunas',-550000.00);
+(15,7,'2000-03-01',450000.00,300000.00,1000000.00,'Lunas',-550000.00),
+(22,8,'2024-12-12',160000.00,10000.00,200000.00,'Pending',-40000.00),
+(25,8,'2024-12-12',510000.00,10000.00,520000.00,'Pending',-10000.00),
+(26,8,'2024-12-12',510000.00,10000.00,510000.00,'Pending',0.00);
 
 /*Table structure for table `pembayaran_elf` */
 
@@ -147,14 +150,16 @@ CREATE TABLE `pembayaran_motor` (
   `sisa_pembayaran_amount` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`id_transaksi_motor`),
   CONSTRAINT `pembayaran_motor_ibfk_1` FOREIGN KEY (`id_transaksi_motor`) REFERENCES `pinjam_motor` (`id_transaksi_motor`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `pembayaran_motor` */
 
 insert  into `pembayaran_motor`(`id_transaksi_motor`,`id_user`,`tanggal_dikembalikan`,`total_pembayaran`,`denda`,`dibayarkan`,`status`,`sisa_pembayaran_amount`) values 
 (2,NULL,'2000-02-01',225000.00,155000.00,10000.00,'Kurang',215000.00),
 (6,7,'2000-01-02',75000.00,5000.00,270000.00,'Lunas',-195000.00),
-(7,7,'2000-01-01',100000.00,0.00,100000.00,'Lunas',0.00);
+(7,7,'2000-01-01',100000.00,0.00,100000.00,'Lunas',0.00),
+(12,7,'2000-01-01',75000.00,0.00,NULL,'Belum Lunas',NULL),
+(16,8,'2024-12-15',70000.00,0.00,70000.00,'Pending',0.00);
 
 /*Table structure for table `pinjam` */
 
@@ -167,17 +172,21 @@ CREATE TABLE `pinjam` (
   `harga_sewa_mobil` decimal(10,2) DEFAULT NULL,
   `tanggal_pinjam` date DEFAULT NULL,
   `tanggal_kembali` date DEFAULT NULL,
+  `jumlah_disewa` int DEFAULT NULL,
   `driver` enum('ya','tidak') DEFAULT NULL,
   PRIMARY KEY (`id_transaksi`),
   KEY `id_mobil` (`id_mobil`),
   CONSTRAINT `pinjam_ibfk_1` FOREIGN KEY (`id_mobil`) REFERENCES `mobil` (`id_mbl`) ON DELETE SET NULL ON UPDATE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `pinjam` */
 
-insert  into `pinjam`(`id_transaksi`,`id_mobil`,`id_user`,`harga_sewa_mobil`,`tanggal_pinjam`,`tanggal_kembali`,`driver`) values 
-(11,1,NULL,150000.00,'2000-01-01','2000-02-01','tidak'),
-(15,1,7,150000.00,'2000-01-01','2000-01-03','tidak');
+insert  into `pinjam`(`id_transaksi`,`id_mobil`,`id_user`,`harga_sewa_mobil`,`tanggal_pinjam`,`tanggal_kembali`,`jumlah_disewa`,`driver`) values 
+(11,1,NULL,150000.00,'2000-01-01','2000-02-01',NULL,'tidak'),
+(15,1,7,150000.00,'2000-01-01','2000-01-03',NULL,'tidak'),
+(22,1,8,150000.00,'2024-12-11','2024-12-12',1,'tidak'),
+(25,1,8,500000.00,'2024-12-11','2024-12-12',2,'ya'),
+(26,1,8,500000.00,'2024-12-11','2024-12-12',2,'ya');
 
 /*Table structure for table `pinjam_elf` */
 
@@ -190,6 +199,7 @@ CREATE TABLE `pinjam_elf` (
   `harga_sewa_elf` decimal(10,2) DEFAULT NULL,
   `tanggal_pinjam` date DEFAULT NULL,
   `tanggal_kembali` date DEFAULT NULL,
+  `jumlah_disewa` int DEFAULT NULL,
   `driver` enum('ya','tidak') DEFAULT NULL,
   PRIMARY KEY (`id_transaksi_elf`),
   KEY `id_elf` (`id_elf`),
@@ -198,10 +208,10 @@ CREATE TABLE `pinjam_elf` (
 
 /*Data for the table `pinjam_elf` */
 
-insert  into `pinjam_elf`(`id_transaksi_elf`,`id_elf`,`id_user`,`harga_sewa_elf`,`tanggal_pinjam`,`tanggal_kembali`,`driver`) values 
-(1,1,NULL,250000.00,'2000-01-01','2000-02-01','tidak'),
-(2,1,NULL,250000.00,'2000-01-01','2000-02-01','tidak'),
-(4,1,7,250000.00,'2000-01-01','2000-01-01','tidak');
+insert  into `pinjam_elf`(`id_transaksi_elf`,`id_elf`,`id_user`,`harga_sewa_elf`,`tanggal_pinjam`,`tanggal_kembali`,`jumlah_disewa`,`driver`) values 
+(1,1,NULL,250000.00,'2000-01-01','2000-02-01',NULL,'tidak'),
+(2,1,NULL,250000.00,'2000-01-01','2000-02-01',NULL,'tidak'),
+(4,1,7,250000.00,'2000-01-01','2000-01-01',NULL,'tidak');
 
 /*Table structure for table `pinjam_motor` */
 
@@ -214,20 +224,23 @@ CREATE TABLE `pinjam_motor` (
   `harga_sewa_motor` decimal(10,2) DEFAULT NULL,
   `tanggal_pinjam` date DEFAULT NULL,
   `tanggal_kembali` date DEFAULT NULL,
+  `jumlah_disewa` int DEFAULT NULL,
   `driver` enum('ya','tidak') DEFAULT NULL,
   PRIMARY KEY (`id_transaksi_motor`),
   KEY `id_motor` (`id_motor`),
   CONSTRAINT `pinjam_motor_ibfk_1` FOREIGN KEY (`id_motor`) REFERENCES `motor` (`id_mtr`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `pinjam_motor` */
 
-insert  into `pinjam_motor`(`id_transaksi_motor`,`id_motor`,`id_user`,`harga_sewa_motor`,`tanggal_pinjam`,`tanggal_kembali`,`driver`) values 
-(2,1,NULL,70000.00,'2000-01-01','2000-05-01','tidak'),
-(3,1,NULL,70000.00,'2024-01-01','2024-01-03','tidak'),
-(4,2,NULL,100000.00,'2024-01-07','2024-01-09','tidak'),
-(6,1,7,70000.00,'2000-01-01','2000-01-01','tidak'),
-(7,2,7,100000.00,'2000-01-01','2000-01-01','tidak');
+insert  into `pinjam_motor`(`id_transaksi_motor`,`id_motor`,`id_user`,`harga_sewa_motor`,`tanggal_pinjam`,`tanggal_kembali`,`jumlah_disewa`,`driver`) values 
+(2,1,NULL,70000.00,'2000-01-01','2000-05-01',NULL,'tidak'),
+(3,1,NULL,70000.00,'2024-01-01','2024-01-03',NULL,'tidak'),
+(4,2,NULL,100000.00,'2024-01-07','2024-01-09',NULL,'tidak'),
+(6,1,7,70000.00,'2000-01-01','2000-01-01',NULL,'tidak'),
+(7,2,7,100000.00,'2000-01-01','2000-01-01',NULL,'tidak'),
+(12,2,7,225000.00,'2024-12-14','2024-12-15',3,'tidak'),
+(16,1,8,70000.00,'2024-12-14','2024-12-15',1,'tidak');
 
 /*Table structure for table `user` */
 
@@ -242,14 +255,15 @@ CREATE TABLE `user` (
   `password` varchar(50) DEFAULT NULL,
   `level` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `user` */
 
 insert  into `user`(`id`,`nama`,`alamat`,`no_hp`,`username`,`password`,`level`) values 
 (1,'Loki','Kediri',81231,'admin','1234','admin'),
 (2,'Hoshi','Kediri',862,'test','1234','penyewa'),
-(7,'frank','medan',123,'frank','123','penyewa');
+(7,'frank','medan',123,'frank','123','penyewa'),
+(8,'stein','medan',123,'stein','123','penyewa');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
