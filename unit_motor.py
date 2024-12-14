@@ -14,8 +14,6 @@ import motor_hapus as H
 import motor_tambah as T
 import motor_lihat as L
 
-
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -91,7 +89,7 @@ class Ui_MainWindow(object):
 
     def Tambah(self):
         self.window = QtWidgets.QMainWindow()
-        self.ui = T.Ui_MainWindow()
+        self.ui = T.Ui_MotorTambahWindow()
         self.ui.setupUi(self.window)
         self.window.show()
 

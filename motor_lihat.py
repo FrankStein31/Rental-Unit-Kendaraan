@@ -1,126 +1,149 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QPixmap, QStandardItemModel, QStandardItem
+from PyQt5.QtWidgets import QMessageBox, QHeaderView, QAbstractItemView
 import mysql.connector
 import menu_admin as mad
+import os
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 679)
-        MainWindow.setStyleSheet("background-color: rgb(0, 170, 255);\n"
-                                 "background-color: rgb(24, 121, 202);")
+        MainWindow.resize(1200, 700)  # Increased size for better visibility
+        MainWindow.setStyleSheet("""
+            QMainWindow {
+                background-color: #1479CA;
+            }
+            QLabel {
+                color: white;
+                font-size: 12px;
+            }
+            QTableWidget {
+                background-color: #F0F0F0;
+                alternate-background-color: #E0E0E0;
+                selection-background-color: #BDE0FE;
+            }
+            QHeaderView::section {
+                background-color: #2196F3;
+                color: white;
+                padding: 5px;
+                border: 1px solid #1976D2;
+                font-weight: bold;
+            }
+            QPushButton {
+                background-color: #FFC107;
+                color: black;
+                border-radius: 5px;
+                padding: 8px;
+            }
+            QPushButton:hover {
+                background-color: #FFA000;
+            }
+            QPushButton#pushButton_kembali {
+                background-color: #F44336;
+                color: white;
+            }
+            QPushButton#pushButton_kembali:hover {
+                background-color: #D32F2F;
+            }
+        """)
+        
         self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.pushButton_kembali = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_kembali.setGeometry(QtCore.QRect(338, 540, 121, 41))
-        font = QtGui.QFont()
-        font.setPointSize(9)
-        self.pushButton_kembali.setFont(font)
-        self.pushButton_kembali.setStyleSheet("color: rgb(255, 255, 255);\n"
-                                              "background-color: rgb(212, 17, 30);")
-        self.pushButton_kembali.setObjectName("pushButton_kembali")
-        self.label_4 = QtWidgets.QLabel(self.centralwidget)
-        self.label_4.setGeometry(QtCore.QRect(248, 70, 311, 41))
-        font = QtGui.QFont()
-        font.setPointSize(20)
-        font.setBold(True)
-        font.setWeight(75)
-        self.label_4.setFont(font)
-        self.label_4.setStyleSheet("color: rgb(255, 255, 255);")
-        self.label_4.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_4.setObjectName("label_4")
-        self.tableWidget = QtWidgets.QTableWidget(self.centralwidget)
-        self.tableWidget.setGeometry(QtCore.QRect(48, 150, 701, 291))
-        self.tableWidget.setStyleSheet("background-color: rgb(229, 229, 229);")
-        self.tableWidget.setObjectName("tableWidget")
-        self.tableWidget.setColumnCount(7)
-        self.tableWidget.setRowCount(0)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(0, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(1, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(2, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(3, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(4, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(5, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(6, item)
-        self.pushButton_refresh = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_refresh.setGeometry(QtCore.QRect(640, 460, 101, 31))
-        self.pushButton_refresh.setStyleSheet("background-color: rgb(255, 202, 111);")
-        self.pushButton_refresh.setObjectName("pushButton_refresh")
         MainWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
-
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-        # Connect the refresh button to the function that fills the table
+        
+        # Main Layout
+        layout = QtWidgets.QVBoxLayout(self.centralwidget)
+        layout.setContentsMargins(20, 20, 20, 20)
+        
+        # Title
+        title_label = QtWidgets.QLabel("DAFTAR MOTOR")
+        title_label.setStyleSheet("color: white; font-size: 24px; font-weight: bold; align: center;")
+        title_label.setAlignment(QtCore.Qt.AlignCenter)
+        layout.addWidget(title_label)
+        
+        # Table Widget
+        self.tableWidget = QtWidgets.QTableWidget()
+        self.tableWidget.setColumnCount(8)
+        self.tableWidget.setAlternatingRowColors(True)
+        self.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        
+        headers = ["ID Kendaraan", "Jenis", "Tipe", "Keluaran Tahun", "Warna", "Stok", "Harga Sewa", "Foto"]
+        self.tableWidget.setHorizontalHeaderLabels(headers)
+        
+        layout.addWidget(self.tableWidget)
+        
+        # Button Layout
+        button_layout = QtWidgets.QHBoxLayout()
+        self.pushButton_refresh = QtWidgets.QPushButton("Refresh")
+        self.pushButton_kembali = QtWidgets.QPushButton("Kembali")
+        
+        button_layout.addWidget(self.pushButton_refresh)
+        button_layout.addWidget(self.pushButton_kembali)
+        
+        layout.addLayout(button_layout)
+        
+        # Connect buttons
         self.pushButton_refresh.clicked.connect(self.refreshTable)
+        self.pushButton_kembali.clicked.connect(self.KembaliMenu)
+        
+        # Initially populate the table
+        self.refreshTable()
 
     def KembaliMenu(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = mad.Ui_MainWindow()
         self.ui.setupUi(self.window)
+        QtWidgets.QApplication.activeWindow().close()
         self.window.show()
 
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.pushButton_kembali.setText(_translate("MainWindow", "Kembali"))
-        self.label_4.setText(_translate("MainWindow", "LIHAT MOTOR"))
-        item = self.tableWidget.horizontalHeaderItem(0)
-        item.setText(_translate("MainWindow", "ID Kendaraan"))
-        item = self.tableWidget.horizontalHeaderItem(1)
-        item.setText(_translate("MainWindow", "Jenis"))
-        item = self.tableWidget.horizontalHeaderItem(2)
-        item.setText(_translate("MainWindow", "Tipe"))
-        item = self.tableWidget.horizontalHeaderItem(3)
-        item.setText(_translate("MainWindow", "Keluaran Tahun"))
-        item = self.tableWidget.horizontalHeaderItem(4)
-        item.setText(_translate("MainWindow", "Warna"))
-        item = self.tableWidget.horizontalHeaderItem(5)
-        item.setText(_translate("MainWindow", "Stok"))
-        item = self.tableWidget.horizontalHeaderItem(6)
-        item.setText(_translate("MainWindow", "Harga sewa"))
-        self.pushButton_refresh.setText(_translate("MainWindow", "Refresh"))
-        self.pushButton_kembali.clicked.connect(self.KembaliMenu)
-        self.pushButton_kembali.clicked.connect(MainWindow.close)
-
-
     def refreshTable(self):
-        # Corrected database connection
-        connection = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='',
-            db='uas'
-        )
-
         try:
-            # Query to fetch data from the mobil table
+            connection = mysql.connector.connect(
+                host='localhost',
+                user='root',
+                password='',
+                database='uas'
+            )
             cursor = connection.cursor()
             query = "SELECT * FROM motor"
             cursor.execute(query)
             result = cursor.fetchall()
 
-            # Clear existing data
             self.tableWidget.setRowCount(0)
 
-            # Add data to the table
-            for row in result:
-                rowPosition = self.tableWidget.rowCount()
-                self.tableWidget.insertRow(rowPosition)
-                for col, value in enumerate(row):
-                    self.tableWidget.setItem(rowPosition, col, QtWidgets.QTableWidgetItem(str(value)))
+            for row_data in result:
+                row_position = self.tableWidget.rowCount()
+                self.tableWidget.insertRow(row_position)
+                
+                # Add text data
+                for col in range(7):
+                    item = QtWidgets.QTableWidgetItem(str(row_data[col]))
+                    item.setTextAlignment(QtCore.Qt.AlignCenter)
+                    self.tableWidget.setItem(row_position, col, item)
+                
+                # Add photo
+                photo_widget = QtWidgets.QLabel()
+                photo_widget.setAlignment(QtCore.Qt.AlignCenter)
+                
+                if row_data[8]:  # Check if photo path exists
+                    photo_path = row_data[8]
+                    if os.path.exists(photo_path):
+                        pixmap = QPixmap(photo_path)
+                        scaled_pixmap = pixmap.scaled(150, 150, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+                        photo_widget.setPixmap(scaled_pixmap)
+                    else:
+                        photo_widget.setText("Foto Tidak Tersedia")
+                else:
+                    photo_widget.setText("Foto Tidak Tersedia")
+                
+                self.tableWidget.setCellWidget(row_position, 7, photo_widget)
 
+        except mysql.connector.Error as e:
+            QMessageBox.warning(None, "Database Error", str(e))
         finally:
-            connection.close()
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
 
 if __name__ == "__main__":
     import sys
