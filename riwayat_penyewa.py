@@ -86,90 +86,118 @@ class Ui_MainWindow(object):
         self.pushButton_3.setText(_translate("MainWindow", "Refresh"))
 
     def refreshData(self):
-        # Connect to MySQL Database
-        db_connection = mysql.connector.connect(
-            host="localhost",
-            user="root",  # Replace with your MySQL username
-            password="",  # Replace with your MySQL password
-            database="uas"  # Replace with your database name
-        )
-        cursor = db_connection.cursor()
+        try:
+            # Connect to MySQL Database
+            db_connection = mysql.connector.connect(
+                host="localhost",
+                user="root",
+                password="",
+                database="uas"
+            )
+            cursor = db_connection.cursor(dictionary=True)
 
-        # Clear the table before refreshing
-        self.tableWidget.setRowCount(0)
+            # Clear the table before refreshing
+            self.tableWidget.setRowCount(0)
 
-        # Fetch data from pinjam, pinjam_motor, and pinjam_elf tables with status from pembayaran tables
-        # Filter by user_id
-        cursor.execute("""
-            SELECT 
-                p.id_transaksi, 
-                m.jenis_mbl AS jenis_unit, 
-                p.harga_sewa_mobil AS harga_sewa, 
-                p.tanggal_pinjam, 
-                p.tanggal_kembali, 
-                p.driver, 
-                pmobil.status AS status_pembayaran
-            FROM pinjam p
-            LEFT JOIN pembayaran pmobil ON p.id_transaksi = pmobil.id_transaksi
-            LEFT JOIN mobil m ON p.id_transaksi = m.id_mbl
-            WHERE p.id_user = %s
-            UNION
-            SELECT 
-                pm.id_transaksi_motor, 
-                mo.jenis_mtr AS jenis_unit, 
-                pm.harga_sewa_motor AS harga_sewa, 
-                pm.tanggal_pinjam, 
-                pm.tanggal_kembali, 
-                pm.driver, 
-                pmotor.status AS status_pembayaran
-            FROM pinjam_motor pm
-            LEFT JOIN pembayaran_motor pmotor ON pm.id_transaksi_motor = pmotor.id_transaksi_motor
-            LEFT JOIN motor mo ON pm.id_transaksi_motor = mo.id_mtr
-            WHERE pm.id_user = %s
-            UNION
-            SELECT 
-                pe.id_transaksi_elf, 
-                e.jenis_elf AS jenis_unit, 
-                pe.harga_sewa_elf AS harga_sewa, 
-                pe.tanggal_pinjam, 
-                pe.tanggal_kembali, 
-                pe.driver, 
-                pelf.status AS status_pembayaran
-            FROM pinjam_elf pe
-            LEFT JOIN pembayaran_elf pelf ON pe.id_transaksi_elf = pelf.id_transaksi_elf
-            LEFT JOIN elf e ON pe.id_transaksi_elf = e.id_elf
-            WHERE pe.id_user = %s
-        """, (self.user_id, self.user_id, self.user_id))
+            # Gabungkan data dari semua tabel rental
+            cursor.execute("""
+                SELECT 
+                    'Mobil' AS jenis_kendaraan,
+                    p.id_transaksi, 
+                    m.jenis_mbl AS merk_unit, 
+                    p.harga_sewa_mobil AS harga_sewa, 
+                    p.tanggal_pinjam, 
+                    p.tanggal_kembali, 
+                    p.driver, 
+                    COALESCE(pmobil.status, 'Pending') AS status_pembayaran
+                FROM pinjam p
+                LEFT JOIN pembayaran pmobil ON p.id_transaksi = pmobil.id_transaksi
+                LEFT JOIN mobil m ON p.id_mobil = m.id_mbl
+                WHERE p.id_user = %s
 
-        # Fetch data and print for debugging
-        rows = cursor.fetchall()
-        print(f"Rows fetched: {rows}")
+                UNION
 
-        # Check if rows exist
-        if not rows:
-            print("No data found!")
-            return
+                SELECT 
+                    'Motor' AS jenis_kendaraan,
+                    pm.id_transaksi_motor AS id_transaksi, 
+                    mo.jenis_mtr AS merk_unit, 
+                    pm.harga_sewa_motor AS harga_sewa, 
+                    pm.tanggal_pinjam, 
+                    pm.tanggal_kembali, 
+                    pm.driver, 
+                    COALESCE(pmotor.status, 'Pending') AS status_pembayaran
+                FROM pinjam_motor pm
+                LEFT JOIN pembayaran_motor pmotor ON pm.id_transaksi_motor = pmotor.id_transaksi_motor
+                LEFT JOIN motor mo ON pm.id_motor = mo.id_mtr
+                WHERE pm.id_user = %s
 
-        # Set table column count and headers
-        self.tableWidget.setColumnCount(7)
-        self.tableWidget.setHorizontalHeaderLabels([
-            "ID Transaksi", "Merk Unit", "Harga Sewa", 
-            "Tanggal Pinjam", "Tanggal Kembali", "Driver", "Status Pembayaran"
-        ])
+                UNION
 
-        # Populate the table with fetched data
-        for row in rows:
-            rowPosition = self.tableWidget.rowCount()
-            self.tableWidget.insertRow(rowPosition)
-            for col, data in enumerate(row):
-                self.tableWidget.setItem(rowPosition, col, QtWidgets.QTableWidgetItem(str(data) if data is not None else ""))
+                SELECT 
+                    'Elf' AS jenis_kendaraan,
+                    pe.id_transaksi_elf AS id_transaksi, 
+                    e.jenis_elf AS merk_unit, 
+                    pe.harga_sewa_elf AS harga_sewa, 
+                    pe.tanggal_pinjam, 
+                    pe.tanggal_kembali, 
+                    pe.driver, 
+                    COALESCE(pelf.status, 'Pending') AS status_pembayaran
+                FROM pinjam_elf pe
+                LEFT JOIN pembayaran_elf pelf ON pe.id_transaksi_elf = pelf.id_transaksi_elf
+                LEFT JOIN elf e ON pe.id_elf = e.id_elf
+                WHERE pe.id_user = %s
+                ORDER BY tanggal_pinjam DESC
+            """, (self.user_id, self.user_id, self.user_id))
 
-        # Close the database connection
-        cursor.close()
-        db_connection.close()
+            rows = cursor.fetchall()
 
+            if not rows:
+                QtWidgets.QMessageBox.information(None, "Informasi", "Tidak ada riwayat rental.")
+                return
 
+            # Set column count and headers
+            self.tableWidget.setColumnCount(8)
+            headers = [
+                "Jenis Kendaraan", "ID Transaksi", "Merk Unit", 
+                "Harga Sewa", "Tanggal Pinjam", "Tanggal Kembali", 
+                "Driver", "Status Pembayaran"
+            ]
+            self.tableWidget.setHorizontalHeaderLabels(headers)
 
+            # Atur lebar kolom agar sesuai
+            for i in range(len(headers)):
+                self.tableWidget.setColumnWidth(i, 100)
+
+            # Populate the table
+            for row in rows:
+                rowPosition = self.tableWidget.rowCount()
+                self.tableWidget.insertRow(rowPosition)
+                
+                # Tambahkan data ke baris
+                for col, (key, value) in enumerate(row.items()):
+                    item = QtWidgets.QTableWidgetItem(str(value) if value is not None else "-")
+                    
+                    # Beri warna berbeda untuk status pembayaran
+                    if key == 'status_pembayaran':
+                        if value == 'Lunas':
+                            item.setBackground(QtGui.QColor(200, 255, 200))  # Hijau muda
+                        elif value == 'Belum Lunas':
+                            item.setBackground(QtGui.QColor(255, 200, 200))  # Merah muda
+                    
+                    self.tableWidget.setItem(rowPosition, col, item)
+
+            # Resize rows agar konten terlihat penuh
+            self.tableWidget.resizeRowsToContents()
+
+        except mysql.connector.Error as err:
+            QtWidgets.QMessageBox.critical(None, "Error Database", f"Terjadi kesalahan: {err}")
+        
+        finally:
+            # Pastikan koneksi ditutup
+            if 'cursor' in locals():
+                cursor.close()
+            if 'db_connection' in locals():
+                db_connection.close()
 
 if __name__ == "_main_":
     import sys

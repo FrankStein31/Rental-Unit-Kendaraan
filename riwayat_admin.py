@@ -81,19 +81,19 @@ class Ui_MainWindow(object):
         self.pushButton_3.setText(_translate("MainWindow", "Refresh"))
 
     def refreshData(self):
-        # Connect to MySQL Database
+        # Database Connection
         db_connection = mysql.connector.connect(
             host="localhost",
-            user="root",  # Replace with your MySQL username
-            password="",  # Replace with your MySQL password
-            database="uas"  # Replace with your database name
+            user="root",
+            password="",
+            database="uas"
         )
         cursor = db_connection.cursor()
 
-        # Clear the table before refreshing
+        # Clear existing table rows
         self.tableWidget.setRowCount(0)
 
-        # Fetch data from pinjam, pinjam_motor, and pinjam_elf tables with status from pembayaran tables
+        # Enhanced SQL Query with exact column names
         cursor.execute("""
             SELECT 
                 p.id_transaksi, 
@@ -102,11 +102,15 @@ class Ui_MainWindow(object):
                 p.tanggal_pinjam, 
                 p.tanggal_kembali, 
                 p.driver, 
-                pmobil.status AS status_pembayaran
+                pmobil.status AS status_pembayaran,
+                u.nama AS nama_penyewa
             FROM pinjam p
             LEFT JOIN pembayaran pmobil ON p.id_transaksi = pmobil.id_transaksi
-            LEFT JOIN mobil m ON p.id_transaksi = m.id_mbl
+            LEFT JOIN mobil m ON p.id_mobil = m.id_mbl
+            LEFT JOIN user u ON p.id_user = u.id
+            
             UNION
+            
             SELECT 
                 pm.id_transaksi_motor, 
                 mo.jenis_mtr AS jenis_unit, 
@@ -114,11 +118,15 @@ class Ui_MainWindow(object):
                 pm.tanggal_pinjam, 
                 pm.tanggal_kembali, 
                 pm.driver, 
-                pmotor.status AS status_pembayaran
+                pmotor.status AS status_pembayaran,
+                u.nama AS nama_penyewa
             FROM pinjam_motor pm
             LEFT JOIN pembayaran_motor pmotor ON pm.id_transaksi_motor = pmotor.id_transaksi_motor
-            LEFT JOIN motor mo ON pm.id_transaksi_motor = mo.id_mtr
+            LEFT JOIN motor mo ON pm.id_motor = mo.id_mtr
+            LEFT JOIN user u ON pm.id_user = u.id
+            
             UNION
+            
             SELECT 
                 pe.id_transaksi_elf, 
                 e.jenis_elf AS jenis_unit, 
@@ -126,41 +134,52 @@ class Ui_MainWindow(object):
                 pe.tanggal_pinjam, 
                 pe.tanggal_kembali, 
                 pe.driver, 
-                pelf.status AS status_pembayaran
+                pelf.status AS status_pembayaran,
+                u.nama AS nama_penyewa
             FROM pinjam_elf pe
             LEFT JOIN pembayaran_elf pelf ON pe.id_transaksi_elf = pelf.id_transaksi_elf
-            LEFT JOIN elf e ON pe.id_transaksi_elf = e.id_elf
+            LEFT JOIN elf e ON pe.id_elf = e.id_elf
+            LEFT JOIN user u ON pe.id_user = u.id
+            ORDER BY tanggal_pinjam DESC
         """)
 
-        # Fetch data and print for debugging
         rows = cursor.fetchall()
-        print(f"Rows fetched: {rows}")
 
-        # Check if rows exist
-        if not rows:
-            print("No data found!")
-            return
-
-        # Set table column count and headers
-        self.tableWidget.setColumnCount(7)  # Ensure this matches the number of columns in your SQL query
-        self.tableWidget.setHorizontalHeaderLabels([
-            "ID Transaksi", "Merk Unit", "Harga Sewa", 
-            "Tanggal Pinjam", "Tanggal Kembali", "Driver", "Status Pembayaran"
-        ])
-
-        # Populate the table with fetched data
+        # Set table properties
+        self.tableWidget.setColumnCount(8)
+        headers = [
+            "ID Transaksi", "Jenis Unit", "Harga Sewa", 
+            "Tanggal Pinjam", "Tanggal Kembali", "Driver", 
+            "Status Pembayaran", "Nama Penyewa"
+        ]
+        self.tableWidget.setHorizontalHeaderLabels(headers)
+        
+        # Populate table with color-coded status
         for row in rows:
             rowPosition = self.tableWidget.rowCount()
             self.tableWidget.insertRow(rowPosition)
+            
             for col, data in enumerate(row):
-                self.tableWidget.setItem(rowPosition, col, QtWidgets.QTableWidgetItem(str(data) if data is not None else ""))
+                item = QtWidgets.QTableWidgetItem(str(data) if data is not None else "")
+                
+                # Color-code payment status
+                if col == 6:  # Status column
+                    status = str(data).lower() if data is not None else ""
+                    if status == 'lunas':
+                        item.setBackground(QtGui.QColor(200, 255, 200))  # Light Green
+                    elif status == 'belum lunas':
+                        item.setBackground(QtGui.QColor(255, 200, 200))  # Light Red
+                    elif status == 'pending':
+                        item.setBackground(QtGui.QColor(255, 255, 200))  # Light Yellow
+                
+                self.tableWidget.setItem(rowPosition, col, item)
 
-        # Close the database connection
+        # Adjust column widths
+        self.tableWidget.resizeColumnsToContents()
+
+        # Close database connection
         cursor.close()
         db_connection.close()
-
-
-
 
 if __name__ == "_main_":
     import sys
