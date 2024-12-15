@@ -1,3 +1,4 @@
+# menu_admin.py
 import kelolaunit_admin as ku
 import riwayat_admin as riw
 import menu_acc as acc
@@ -8,79 +9,90 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
-        MainWindow.setStyleSheet("background-color: rgb(24, 121, 202);")
+        MainWindow.setStyleSheet("""
+            QMainWindow {
+                background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, 
+                    stop:0 rgba(36, 160, 237, 255), 
+                    stop:1 rgba(90, 200, 250, 255));
+            }
+            QPushButton {
+                background-color: white;
+                color: #1E88E5;
+                border-radius: 10px;
+                padding: 10px;
+                font-size: 14px;
+                font-weight: bold;
+                border: 2px solid #1E88E5;
+            }
+            QPushButton:hover {
+                background-color: #E3F2FD;
+            }
+            QPushButton:pressed {
+                background-color: #BBDEFB;
+            }
+            QLabel {
+                color: white;
+                font-weight: bold;
+            }
+        """)
+        
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.label_4 = QtWidgets.QLabel(self.centralwidget)
-        self.label_4.setGeometry(QtCore.QRect(210, 30, 421, 41))
+        
+        # Main Layout
+        layout = QtWidgets.QVBoxLayout(self.centralwidget)
+        layout.setContentsMargins(50, 50, 50, 50)
+        layout.setSpacing(20)
+        
+        # Welcome Label
+        self.label_4 = QtWidgets.QLabel("Selamat Datang Admin !")
+        self.label_4.setObjectName("label_4")
+        self.label_4.setAlignment(QtCore.Qt.AlignCenter)
         font = QtGui.QFont()
         font.setPointSize(20)
         font.setBold(True)
-        font.setWeight(75)
         self.label_4.setFont(font)
-        self.label_4.setStyleSheet("color: rgb(255, 255, 255);")
-        self.label_4.setObjectName("label_4")
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(380, 160, 91, 21))
-        font = QtGui.QFont()
-        font.setPointSize(18)
-        font.setBold(True)
-        font.setWeight(75)
-        self.label.setFont(font)
-        self.label.setStyleSheet("color: rgb(255, 255, 255);")
+        layout.addWidget(self.label_4)
+        
+        # Menu Label
+        self.label = QtWidgets.QLabel("MENU")
         self.label.setObjectName("label")
-        self.pushButton_kelolaunit = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_kelolaunit.setGeometry(QtCore.QRect(180, 220, 421, 41))
+        self.label.setAlignment(QtCore.Qt.AlignCenter)
         font = QtGui.QFont()
-        font.setPointSize(11)
-        font.setBold(False)
-        font.setWeight(50)
-        self.pushButton_kelolaunit.setFont(font)
-        self.pushButton_kelolaunit.setStyleSheet("background-color: rgb(170, 255, 255);")
+        font.setPointSize(16)
+        self.label.setFont(font)
+        layout.addWidget(self.label)
+        
+        # Buttons
+        self.pushButton_kelolaunit = QtWidgets.QPushButton("Kelola Unit")
         self.pushButton_kelolaunit.setObjectName("pushButton_kelolaunit")
-        self.pushButton_riwayat = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_riwayat.setGeometry(QtCore.QRect(180, 280, 421, 41))
-        font = QtGui.QFont()
-        font.setPointSize(11)
-        font.setBold(False)
-        font.setWeight(50)
-        self.pushButton_riwayat.setFont(font)
-        self.pushButton_riwayat.setStyleSheet("background-color: rgb(170, 255, 255);")
+        layout.addWidget(self.pushButton_kelolaunit)
+        
+        self.pushButton_riwayat = QtWidgets.QPushButton("Riwayat")
         self.pushButton_riwayat.setObjectName("pushButton_riwayat")
-
-        # Menambahkan tombol Acc Pembayaran
-        self.pushButton_acc_pembayaran = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_acc_pembayaran.setGeometry(QtCore.QRect(180, 340, 421, 41))
-        font = QtGui.QFont()
-        font.setPointSize(11)
-        font.setBold(False)
-        font.setWeight(50)
-        self.pushButton_acc_pembayaran.setFont(font)
-        self.pushButton_acc_pembayaran.setStyleSheet("background-color: rgb(170, 255, 255);")
+        layout.addWidget(self.pushButton_riwayat)
+        
+        self.pushButton_acc_pembayaran = QtWidgets.QPushButton("Acc Pembayaran")
         self.pushButton_acc_pembayaran.setObjectName("pushButton_acc_pembayaran")
-
-        self.pushButton_keluar = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_keluar.setGeometry(QtCore.QRect(680, 10, 101, 31))
-        font = QtGui.QFont()
-        font.setPointSize(8)
-        self.pushButton_keluar.setFont(font)
-        self.pushButton_keluar.setStyleSheet("color: rgb(255, 255, 255);\n"
-"background-color: rgb(212, 17, 30);\n"
-"")
+        layout.addWidget(self.pushButton_acc_pembayaran)
+        
+        # Logout Button
+        logout_layout = QtWidgets.QHBoxLayout()
+        logout_layout.addStretch()
+        self.pushButton_keluar = QtWidgets.QPushButton("Logout")
         self.pushButton_keluar.setObjectName("pushButton_keluar")
-
+        self.pushButton_keluar.setStyleSheet("""
+            background-color: #D32F2F;
+            color: white;
+            border-radius: 5px;
+            padding: 5px 10px;
+        """)
+        logout_layout.addWidget(self.pushButton_keluar)
+        layout.addLayout(logout_layout)
+        
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 26))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
+        # Connect signals
         self.pushButton_kelolaunit.clicked.connect(self.KelolaUnit)
         self.pushButton_kelolaunit.clicked.connect(MainWindow.close)
 
@@ -90,7 +102,6 @@ class Ui_MainWindow(object):
         self.pushButton_keluar.clicked.connect(self.Logout)
         self.pushButton_keluar.clicked.connect(MainWindow.close)
 
-        # Menambahkan aksi pada tombol "Acc Pembayaran"
         self.pushButton_acc_pembayaran.clicked.connect(self.Acc)
         self.pushButton_acc_pembayaran.clicked.connect(MainWindow.close)
 
