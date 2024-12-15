@@ -37,7 +37,7 @@ CREATE TABLE `elf` (
 
 insert  into `elf`(`id_elf`,`jenis_elf`,`type_elf`,`tahun_elf`,`warna_elf`,`stok_elf`,`harga_sewa_elf`,`driver`,`foto`) values 
 (1,'Mercy','E60',2018,'Hitam',18,250000,'tidak','elf_images\\1f4f2da6-5e61-4ba7-8d9c-29b44a7ee339_1734193971_th (4).jpeg'),
-(2,'Mercy','F60',2021,'Merah Muda',10,250000,'tidak','elf_images\\9cab189f-38d4-4998-8dfd-b3390c203a83_1734193963_th (4).jpeg');
+(2,'Mercy','F60',2021,'Merah Muda',9,250000,'tidak','elf_images\\9cab189f-38d4-4998-8dfd-b3390c203a83_1734193963_th (4).jpeg');
 
 /*Table structure for table `mobil` */
 
@@ -60,7 +60,7 @@ CREATE TABLE `mobil` (
 
 insert  into `mobil`(`id_mbl`,`jenis_mbl`,`type_mbl`,`tahun_mbl`,`warna_mbl`,`stok_mbl`,`harga_sewa_mbl`,`driver`,`foto`) values 
 (1,'Honda','Jazz',2017,'Putih',24,150000,'tidak','mobil_images\\9fbd2198-303e-4c8a-a46b-a81a4302aa5d_1734193941_th (3).jpeg'),
-(2,'Toyota','Yaris',2022,'Kuning',0,150000,'tidak','mobil_images\\4a3483bd-526b-4881-8f46-83baf367dfeb_1734172427_th (3).jpeg');
+(2,'Toyota','Yaris',2022,'Kuning',10,150000,'tidak','mobil_images\\4a3483bd-526b-4881-8f46-83baf367dfeb_1734172427_th (3).jpeg');
 
 /*Table structure for table `motor` */
 
@@ -84,7 +84,8 @@ CREATE TABLE `motor` (
 insert  into `motor`(`id_mtr`,`jenis_mtr`,`type_mtr`,`tahun_mtr`,`warna_mtr`,`stok_mtr`,`harga_sewa_mtr`,`driver`,`foto`) values 
 (1,'Vario','160cc',2021,'hitam',33,70000,'tidak','motor_images\\d0550133-2856-4635-8859-1beed65c4130_1734193907_th (2).jpeg'),
 (2,'Yamaha','Nmax',2024,'Hitam',95,75000,'tidak','motor_images\\57b6dc7c-5d42-43de-8545-bc8b3a2f924f_1734193895_th (2).jpeg'),
-(4,'tesss','tess',2021,'putih',90,35000,'tidak','motor_images\\1734161331_th (2).jpeg');
+(4,'tesss','tess',2021,'putih',90,35000,'tidak','motor_images\\1734161331_th (2).jpeg'),
+(5,'coba','coba',1234,'coba',31,54000,'tidak','motor_images\\379c6263-b20e-4923-b10f-99bae40563c6_1734234063_th (5).jpeg');
 
 /*Table structure for table `pembayaran` */
 
@@ -101,16 +102,16 @@ CREATE TABLE `pembayaran` (
   `sisa_pembayaran_amount` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`id_transaksi`),
   CONSTRAINT `pembayaran_ibfk_1` FOREIGN KEY (`id_transaksi`) REFERENCES `pinjam` (`id_transaksi`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `pembayaran` */
 
 insert  into `pembayaran`(`id_transaksi`,`id_user`,`tanggal_dikembalikan`,`total_pembayaran`,`denda`,`dibayarkan`,`status`,`sisa_pembayaran_amount`) values 
-(11,NULL,'2000-01-01',150000.00,0.00,77777.00,'Kurang',72223.00),
 (15,7,'2000-03-01',450000.00,300000.00,1000000.00,'Lunas',-550000.00),
 (22,8,'2024-12-12',160000.00,10000.00,200000.00,'Pending',-40000.00),
 (25,8,'2024-12-12',510000.00,10000.00,520000.00,'Pending',-10000.00),
-(26,8,'2024-12-12',510000.00,10000.00,510000.00,'Pending',0.00);
+(26,8,'2024-12-12',510000.00,10000.00,510000.00,'Completed',0.00),
+(27,8,'2024-12-16',300000.00,0.00,300000.00,'Completed',0.00);
 
 /*Table structure for table `pembayaran_elf` */
 
@@ -127,14 +128,14 @@ CREATE TABLE `pembayaran_elf` (
   `sisa_pembayaran_amount` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`id_transaksi_elf`),
   CONSTRAINT `pembayaran_elf_ibfk_1` FOREIGN KEY (`id_transaksi_elf`) REFERENCES `pinjam_elf` (`id_transaksi_elf`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `pembayaran_elf` */
 
 insert  into `pembayaran_elf`(`id_transaksi_elf`,`id_user`,`tanggal_dikembalikan`,`total_pembayaran`,`denda`,`dibayarkan`,`status`,`sisa_pembayaran_amount`) values 
-(1,NULL,'2000-02-01',405000.00,155000.00,1000.00,'Kurang',404000.00),
 (4,7,'2000-02-01',405000.00,155000.00,700000.00,'Lunas',-295000.00),
-(6,8,'2024-12-12',710000.00,10000.00,710000.00,'Pending',0.00);
+(6,8,'2024-12-12',710000.00,10000.00,710000.00,'Pending',0.00),
+(7,7,'2024-12-16',350000.00,0.00,350000.00,'Completed',0.00);
 
 /*Table structure for table `pembayaran_motor` */
 
@@ -156,11 +157,10 @@ CREATE TABLE `pembayaran_motor` (
 /*Data for the table `pembayaran_motor` */
 
 insert  into `pembayaran_motor`(`id_transaksi_motor`,`id_user`,`tanggal_dikembalikan`,`total_pembayaran`,`denda`,`dibayarkan`,`status`,`sisa_pembayaran_amount`) values 
-(2,NULL,'2000-02-01',225000.00,155000.00,10000.00,'Kurang',215000.00),
 (6,7,'2000-01-02',75000.00,5000.00,270000.00,'Lunas',-195000.00),
 (7,7,'2000-01-01',100000.00,0.00,100000.00,'Lunas',0.00),
-(12,7,'2000-01-01',75000.00,0.00,NULL,'Belum Lunas',NULL),
-(16,8,'2024-12-15',70000.00,0.00,70000.00,'Pending',0.00);
+(12,7,'2000-01-01',75000.00,0.00,NULL,'Lunas',NULL),
+(16,8,'2024-12-15',70000.00,0.00,70000.00,'Completed',0.00);
 
 /*Table structure for table `pinjam` */
 
@@ -178,7 +178,7 @@ CREATE TABLE `pinjam` (
   PRIMARY KEY (`id_transaksi`),
   KEY `id_mobil` (`id_mobil`),
   CONSTRAINT `pinjam_ibfk_1` FOREIGN KEY (`id_mobil`) REFERENCES `mobil` (`id_mbl`) ON DELETE SET NULL ON UPDATE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `pinjam` */
 
@@ -187,7 +187,8 @@ insert  into `pinjam`(`id_transaksi`,`id_mobil`,`id_user`,`harga_sewa_mobil`,`ta
 (15,1,7,150000.00,'2000-01-01','2000-01-03',NULL,'tidak'),
 (22,1,8,150000.00,'2024-12-11','2024-12-12',1,'tidak'),
 (25,1,8,500000.00,'2024-12-11','2024-12-12',2,'ya'),
-(26,1,8,500000.00,'2024-12-11','2024-12-12',2,'ya');
+(26,1,8,500000.00,'2024-12-11','2024-12-12',2,'ya'),
+(27,2,8,300000.00,'2024-12-15','2024-12-16',2,'tidak');
 
 /*Table structure for table `pinjam_elf` */
 
@@ -205,7 +206,7 @@ CREATE TABLE `pinjam_elf` (
   PRIMARY KEY (`id_transaksi_elf`),
   KEY `id_elf` (`id_elf`),
   CONSTRAINT `pinjam_elf_ibfk_1` FOREIGN KEY (`id_elf`) REFERENCES `elf` (`id_elf`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `pinjam_elf` */
 
@@ -213,7 +214,8 @@ insert  into `pinjam_elf`(`id_transaksi_elf`,`id_elf`,`id_user`,`harga_sewa_elf`
 (1,1,NULL,250000.00,'2000-01-01','2000-02-01',NULL,'tidak'),
 (2,1,NULL,250000.00,'2000-01-01','2000-02-01',NULL,'tidak'),
 (4,1,7,250000.00,'2000-01-01','2000-01-01',NULL,'tidak'),
-(6,1,8,700000.00,'2024-12-11','2024-12-12',2,'ya');
+(6,1,8,700000.00,'2024-12-11','2024-12-12',2,'ya'),
+(7,2,7,350000.00,'2024-12-15','2024-12-16',1,'ya');
 
 /*Table structure for table `pinjam_motor` */
 
