@@ -7,76 +7,89 @@ import menu_admin as mad
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 600)
-        MainWindow.setStyleSheet("background-color: rgb(24, 121, 202);")
+        MainWindow.resize(900, 600)
+        MainWindow.setStyleSheet("""
+            QMainWindow {
+                background-color: qlineargradient(
+                    x1:0, y1:0, x2:1, y2:1, 
+                    stop:0 #2C3E50, 
+                    stop:1 #34495E
+                );
+            }
+            QPushButton {
+                background-color: #3498DB;
+                color: white;
+                border-radius: 10px;
+                padding: 12px;
+                font-size: 14px;
+                font-weight: bold;
+                transition: all 0.3s ease;
+            }
+            QPushButton:hover {
+                background-color: #2980B9;
+                transform: scale(1.05);
+            }
+            QPushButton:pressed {
+                background-color: #21618C;
+            }
+        """)
+        
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.gridLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.gridLayoutWidget.setGeometry(QtCore.QRect(140, 140, 531, 281))
-        self.gridLayoutWidget.setObjectName("gridLayoutWidget")
-        self.gridLayout = QtWidgets.QGridLayout(self.gridLayoutWidget)
-        self.gridLayout.setContentsMargins(0, 0, 0, 0)
-        self.gridLayout.setObjectName("gridLayout")
-        self.pushButton_mobil = QtWidgets.QPushButton(self.gridLayoutWidget)
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        font.setBold(True)
-        font.setWeight(75)
-        self.pushButton_mobil.setFont(font)
-        self.pushButton_mobil.setStyleSheet("background-color: rgb(255, 202, 111);")
-        self.pushButton_mobil.setObjectName("pushButton_mobil")
-        self.gridLayout.addWidget(self.pushButton_mobil, 1, 0, 1, 1)
-        self.pushButton_elf = QtWidgets.QPushButton(self.gridLayoutWidget)
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        font.setBold(True)
-        font.setWeight(75)
-        self.pushButton_elf.setFont(font)
-        self.pushButton_elf.setStyleSheet("background-color: rgb(255, 202, 111);")
-        self.pushButton_elf.setObjectName("pushButton_elf")
-        self.gridLayout.addWidget(self.pushButton_elf, 2, 0, 1, 1)
-        self.pushButton_motor = QtWidgets.QPushButton(self.gridLayoutWidget)
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        font.setBold(True)
-        font.setWeight(75)
-        self.pushButton_motor.setFont(font)
-        self.pushButton_motor.setStyleSheet("background-color: rgb(255, 202, 111);")
-        self.pushButton_motor.setObjectName("pushButton_motor")
-        self.gridLayout.addWidget(self.pushButton_motor, 0, 0, 1, 1)
+        
+        # Create a vertical layout for the central widget
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
+        self.verticalLayout.setContentsMargins(50, 50, 50, 50)
+        self.verticalLayout.setSpacing(20)
+        
+        # Title Label
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(140, 50, 531, 41))
         font = QtGui.QFont()
-        font.setPointSize(20)
-        font.setBold(True)
+        font.setPointSize(22)
         font.setWeight(75)
+        font.setFamily("Segoe UI")
         self.label.setFont(font)
-        self.label.setStyleSheet("color: rgb(255, 255, 255);")
-        self.label.setScaledContents(False)
+        self.label.setStyleSheet("""
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+        """)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
-        self.label.setWordWrap(False)
         self.label.setObjectName("label")
+        self.verticalLayout.addWidget(self.label)
+        
+        # Buttons Container
+        self.buttonsWidget = QtWidgets.QWidget(self.centralwidget)
+        self.buttonsLayout = QtWidgets.QVBoxLayout(self.buttonsWidget)
+        self.buttonsLayout.setSpacing(15)
+        
+        # Vehicle Type Buttons
+        self.pushButton_motor = self.createStyledButton("Motor")
+        self.pushButton_mobil = self.createStyledButton("Mobil")
+        self.pushButton_elf = self.createStyledButton("Elf")
+        
+        self.buttonsLayout.addWidget(self.pushButton_motor)
+        self.buttonsLayout.addWidget(self.pushButton_mobil)
+        self.buttonsLayout.addWidget(self.pushButton_elf)
+        
+        self.verticalLayout.addWidget(self.buttonsWidget)
+        
+        # Exit Button
         self.pushButton_keluar = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_keluar.setGeometry(QtCore.QRect(350, 420, 111, 31))
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        self.pushButton_keluar.setFont(font)
-        self.pushButton_keluar.setStyleSheet("color: rgb(255, 255, 255);\n"
-"background-color: rgb(212, 17, 30);\n"
-"")
+        self.pushButton_keluar.setStyleSheet("""
+            background-color: #E74C3C;
+            color: white;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 12px;
+        """)
         self.pushButton_keluar.setObjectName("pushButton_keluar")
+        self.verticalLayout.addWidget(self.pushButton_keluar)
+        
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 26))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
-
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
+        
+        # Connect signals
         self.pushButton_motor.clicked.connect(self.AccMtr)
         self.pushButton_motor.clicked.connect(MainWindow.close)
         self.pushButton_mobil.clicked.connect(self.AccMbl)
@@ -85,6 +98,15 @@ class Ui_MainWindow(object):
         self.pushButton_elf.clicked.connect(MainWindow.close)
         self.pushButton_keluar.clicked.connect(self.Kembali)
         self.pushButton_keluar.clicked.connect(MainWindow.close)
+
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def createStyledButton(self, text):
+        button = QtWidgets.QPushButton()
+        button.setText(text)
+        button.setMinimumHeight(50)
+        return button
 
     def AccMtr(self):
         self.window = QtWidgets.QMainWindow()
@@ -112,13 +134,12 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "ACC Pembayaran Kendaraan"))
         self.pushButton_mobil.setText(_translate("MainWindow", "Mobil"))
         self.pushButton_elf.setText(_translate("MainWindow", "Elf"))
         self.pushButton_motor.setText(_translate("MainWindow", "Motor"))
         self.label.setText(_translate("MainWindow", "ACC PEMBAYARAN KENDARAAN"))
         self.pushButton_keluar.setText(_translate("MainWindow", "Kembali"))
-
 
 if __name__ == "__main__":
     import sys

@@ -4,73 +4,98 @@ import menu_penyewa as mep
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow, user_id=None):
-
         self.user_id = user_id
 
-        print("Ini id user dari HALAMAN RIWAYAT PENYEWA", user_id)
-
-
+        # Main Window Setup
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 600)
-        MainWindow.setStyleSheet("background-color: rgb(24, 121, 202);")
+        MainWindow.resize(900, 700)
+        MainWindow.setStyleSheet("""
+            QMainWindow {
+                background-color: #F4F7F6;
+            }
+            QLabel {
+                color: #2C3E50;
+                font-weight: bold;
+            }
+            QPushButton {
+                background-color: #3498DB;
+                color: white;
+                border-radius: 8px;
+                padding: 10px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #2980B9;
+            }
+            QPushButton#backButton {
+                background-color: #E74C3C;
+            }
+            QPushButton#backButton:hover {
+                background-color: #C0392B;
+            }
+            QTableWidget {
+                background-color: white;
+                border-radius: 10px;
+                gridline-color: #BDC3C7;
+            }
+            QHeaderView::section {
+                background-color: #2980B9;
+                color: white;
+                padding: 5px;
+                border: none;
+                font-weight: bold;
+            }
+        """)
+
         self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.label_4 = QtWidgets.QLabel(self.centralwidget)
-        self.label_4.setGeometry(QtCore.QRect(260, 20, 311, 41))
-        font = QtGui.QFont()
-        font.setPointSize(20)
-        font.setBold(True)
-        font.setWeight(75)
-        self.label_4.setFont(font)
-        self.label_4.setStyleSheet("color: rgb(255, 255, 255);")
-        self.label_4.setObjectName("label_4")
-        self.tableWidget = QtWidgets.QTableWidget(self.centralwidget)
-        self.tableWidget.setGeometry(QtCore.QRect(60, 100, 701, 291))
-        self.tableWidget.setStyleSheet("background-color: rgb(229, 229, 229);")
-        self.tableWidget.setObjectName("tableWidget")
-        self.tableWidget.setColumnCount(6)  # Update the column count
-        self.tableWidget.setRowCount(0)
-        
-        # Set column headers
-        self.tableWidget.setHorizontalHeaderLabels([
-            "ID Transaksi", "ID Kendaraan", "Harga Sewa", "Tgl Pinjam", "Tgl Kembali", "Driver"
-        ])
-
-        self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_2.setGeometry(QtCore.QRect(330, 490, 121, 41))
-        font = QtGui.QFont()
-        font.setPointSize(9)
-        self.pushButton_2.setFont(font)
-        self.pushButton_2.setStyleSheet("color: rgb(255, 255, 255);\n"
-"background-color: rgb(212, 17, 30);")
-        self.pushButton_2.setObjectName("pushButton_2")
-        
-        self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_3.setGeometry(QtCore.QRect(640, 400, 121, 41))
-        font = QtGui.QFont()
-        font.setPointSize(9)
-        self.pushButton_3.setFont(font)
-        self.pushButton_3.setStyleSheet("color: rgb(0, 0, 0);\n"
-"background-color: rgb(255, 255, 255);")
-        self.pushButton_3.setObjectName("pushButton_3")
-        
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 26))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        # Main Layout
+        main_layout = QtWidgets.QVBoxLayout(self.centralwidget)
+        main_layout.setContentsMargins(20, 20, 20, 20)
+        main_layout.setSpacing(15)
 
+        # Title
+        title_label = QtWidgets.QLabel("Riwayat Rental")
+        title_label.setAlignment(QtCore.Qt.AlignCenter)
+        title_font = QtGui.QFont()
+        title_font.setPointSize(22)
+        title_font.setBold(True)
+        title_label.setFont(title_font)
+        main_layout.addWidget(title_label)
+
+        # Table Widget
+        self.tableWidget = QtWidgets.QTableWidget()
+        self.tableWidget.setColumnCount(8)
+        self.tableWidget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.tableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        main_layout.addWidget(self.tableWidget)
+
+        # Button Layout
+        button_layout = QtWidgets.QHBoxLayout()
+        button_layout.setSpacing(15)
+
+        # Back Button
+        self.pushButton_2 = QtWidgets.QPushButton("Kembali")
+        self.pushButton_2.setObjectName("backButton")
+        
+        # Refresh Button
+        self.pushButton_3 = QtWidgets.QPushButton("Refresh")
+        
+        button_layout.addStretch(1)
+        button_layout.addWidget(self.pushButton_2)
+        button_layout.addWidget(self.pushButton_3)
+        button_layout.addStretch(1)
+
+        main_layout.addLayout(button_layout)
+
+        # Connect Signals
         self.pushButton_2.clicked.connect(self.KembaliMenu)
         self.pushButton_2.clicked.connect(MainWindow.close)
-
-        # Connect refresh button to fetch data
         self.pushButton_3.clicked.connect(self.refreshData)
+
+        # Initial data refresh
+        QtCore.QTimer.singleShot(100, self.refreshData)
 
     def KembaliMenu(self):
         self.window = QtWidgets.QMainWindow()
